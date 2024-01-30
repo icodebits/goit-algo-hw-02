@@ -34,13 +34,19 @@ def process_request():
         # Зачекати перед обробкою наступної заявки
         time.sleep(1)
 
-# Створити та запустити два окремі потоки для генерації та обробки заявок
-generate_thread = threading.Thread(target=generate_request)
-process_thread = threading.Thread(target=process_request)
+try:
+    # Створити та запустити два окремі потоки для генерації та обробки заявок
+    generate_thread = threading.Thread(target=generate_request)
+    process_thread = threading.Thread(target=process_request)
+    generate_thread.daemon = True
+    process_thread.daemon  = True
 
-generate_thread.start()
-process_thread.start()
+    generate_thread.start()
+    process_thread.start()
 
-# Чекаемо, поки користувач не зупинить програму за допомогою Ctrl+C
-generate_thread.join()
-process_thread.join()
+    while True:
+        time.sleep(100)
+
+    # Чекаемо, поки користувач не зупинить програму за допомогою Ctrl+C
+except (KeyboardInterrupt, SystemExit):
+    print("Main thread interrupted. Exiting.")
